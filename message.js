@@ -221,8 +221,13 @@
       window.scrollTo({ top: 0, behavior: still.matches ? "auto" : "smooth" });
       const started = performance.now();
       const check = () => {
-        if (window.scrollY < 2 || performance.now() - started > 1500) done();
-        else requestAnimationFrame(check);
+        if (window.scrollY < 2) return done();
+        // If the smooth scroll stalls or gets cut off, jump the rest of the way
+        if (performance.now() - started > 1200) {
+          window.scrollTo(0, 0);
+          return done();
+        }
+        requestAnimationFrame(check);
       };
       requestAnimationFrame(check);
     });
@@ -240,6 +245,13 @@
       note.hidden = false;
       layout();
     });
+    // Safety net: once the intro has finished growing, make sure we're
+    // still at the top (some phones nudge the scroll while content changes)
+    later(() => {
+      if (state === "shown" && window.scrollY > 2) {
+        window.scrollTo({ top: 0, behavior: still.matches ? "auto" : "smooth" });
+      }
+    }, RESIZE_MS + 60);
     // Start with the lines retracted, then draw them
     paths.forEach((p) => {
       p.style.transition = "none";
