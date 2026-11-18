@@ -376,4 +376,15 @@ footer p {
   width: 100%;
   height: 100%;
   pointer-events: none;
+  /* Full strength in the side margins, dimmed behind the text column */
+  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 14%, rgb(0 0 0 / 0.3) 30%, rgb(0 0 0 / 0.3) 70%, #000 86%, #000 100%);
+  mask-image: linear-gradient(to right, #000 0%, #000 14%, rgb(0 0 0 / 0.3) 30%, rgb(0 0 0 / 0.3) 70%, #000 86%, #000 100%);
+}
+
+@media (max-width: 46rem) {
+  .field {
+    -webkit-mask-image: none;
+    mask-image: none;
+    opacity: 0.4;
+  }
 }
