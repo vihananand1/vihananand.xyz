@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vihan Anand</title>
+  <meta name="description" content="Projects and research by Vihan Anand, a junior at Freedom High School in South Riding, Virginia.">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#work">Skip to projects</a>
+
+  <header class="intro wrap">
+    <h1>Vihan Anand</h1>
+    <p class="lede">
+      I’m a junior at Freedom High School in South Riding, Virginia. I build
+      apps and websites, and I’ve spent the last two summers doing research
+      at George Mason University. Below is everything I’ve worked on, newest first.
+    </p>
+    <ul class="contact">
+      <li><a href="mailto:vihananand2010@gmail.com">vihananand2010@gmail.com</a></li>
+      <li><a href="tel:+12023025536">(202) 302-5536</a></li>
+      <li><a href="https://www.linkedin.com/in/vihan-anand-52902836b/">LinkedIn</a></li>
+      <li><a href="resume.pdf">Resume (PDF)</a></li>
+    </ul>
+  </header>
+
+  <main id="work">
+
+    <section class="year" aria-labelledby="y2026">
+      <h2 class="year-label" id="y2026">2026</h2>
+      <ul class="entries">
+        <li>
+          <a class="entry" href="#data-centers" data-project="data-centers">
+            <span class="entry-title">How AI Data Centers Work</span>
+            <span class="entry-blurb">A book manuscript I co-authored on how GPUs talk to each other while they train a model together.</span>
+            <span class="entry-meta"><span>Research intern, George Mason University</span><time>June to August 2026</time></span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="year" aria-labelledby="y2025">
+      <h2 class="year-label" id="y2025">2025</h2>
+      <ul class="entries">
+        <li>
+          <a class="entry" href="#crosscheck" data-project="crosscheck">
+            <span class="entry-title">CrossCheck</span>
+            <span class="entry-blurb">A web app that checked the math and logic in AI answers and showed its work.</span>
+            <span class="entry-meta"><span>Team project</span><time>December 2025 to March 2026</time></span>
+          </a>
+        </li>
+        <li>
+          <a class="entry" href="#creatorpredict" data-project="creatorpredict">
+            <span class="entry-title">CreatorPredict</span>
+            <span class="entry-blurb">A game where fans picked which creators would grow and earned points for being right.</span>
+            <span class="entry-meta"><span>Web developer and head of business development</span><time>December 2025 to January 2026</time></span>
+          </a>
+        </li>
+        <li>
+          <a class="entry" href="#coinfluence" data-project="coinfluence">
+            <span class="entry-title">CoinFluence</span>
+            <span class="entry-blurb">A platform for creator tokens that fans could buy, hold, and trade.</span>
+            <span class="entry-meta"><span>Co-founder</span><time>August 2025 to January 2026</time></span>
+          </a>
+        </li>
+        <li>
+          <a class="entry" href="#windtexter" data-project="windtexter">
+            <span class="entry-title">WindTexter</span>
+            <span class="entry-blurb">A research app that hides private messages inside ordinary-looking text.</span>
+            <span class="entry-meta"><span>Research intern, George Mason University</span><time>Summer 2025</time></span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="year" aria-labelledby="y2024">
+      <h2 class="year-label" id="y2024">2024</h2>
+      <ul class="entries">
+        <li>
+          <a class="entry" href="#refined-harmony" data-project="refined-harmony">
+            <span class="entry-title">Refined Harmony</span>
+            <span class="entry-blurb">An iPhone app that turns your audio up when the room gets loud.</span>
+            <span class="entry-meta"><span>iOS app</span><time>April 2024</time></span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="wrap">
+    <p>Updated November 2026</p>
+  </footer>
+
+  <dialog class="detail" aria-labelledby="detail-title">
+    <div class="detail-bar">
+      <button type="button" class="close">Close</button>
+    </div>
+    <div class="detail-body"></div>
+  </dialog>
+
+  <!-- Full write-ups. Each template fills the dialog when its project is opened. -->
+
+  <template id="data-centers">
+    <h2 id="detail-title">How AI Data Centers Work</h2>
+    <p class="detail-meta"><span>Research intern, George Mason University</span><time>June to August 2026</time></p>
+    <p>
+      A book manuscript I co-authored with Massieh Kordi Boroujeny, titled
+      <cite>How AI Data Centers Work: Architecture, Communication, Telemetry,
+      and Security</cite>. It covers how GPUs talk to each other when they
+      train one model together.
+    </p>
+    <p>
+      I drew the diagrams that trace data moving between GPUs inside a single
+      server and across a network of servers, and I made the presentations that
+      walk through them. I also compared the records kept by GPUs, network
+      switches, and job schedulers to show how an operator could catch
+      unexpected traffic in the middle of a training run.
+    </p>
+  </template>
+
+  <template id="crosscheck">
+    <h2 id="detail-title">CrossCheck</h2>
+    <p class="detail-meta"><span>Team project, AI answer verification</span><time>December 2025 to March 2026</time></p>
+    <p>
+      A web app that checked the claims in an AI-generated answer. Claims it
+      could test were sent to the Z3 theorem prover or the SymPy math engine,
+      and the user saw the result along with each calculation step. Anything
+      it couldn’t check was marked unverified instead of being passed along
+      as true.
+    </p>
+    <p>
+      We launched it publicly as four Docker services on AWS ECS Fargate: an
+      API, Z3, SymPy, and a physics service, connected over a private network
+      with AWS Cloud Map. I used Claude as a coding partner while I learned
+      private networking, credential handling with Secrets Manager, and how
+      to debug a deployment that won’t come up. The project has since wrapped up.
+    </p>
+    <p class="detail-stack">Docker, AWS ECS Fargate, AWS Cloud Map, AWS Secrets Manager, Z3, SymPy</p>
+    <figure>
+      <img src="images/crosscheck-homepage.jpg" width="1280" height="720" alt="CrossCheck chat screen with an empty question box" loading="lazy">
+      <figcaption>The chat screen, where you type a question you’d normally double-check.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/crosscheck-verification.jpg" width="1280" height="720" alt="A verified answer to a kinematics question showing given values, the equation, and the final answer of 24 meters" loading="lazy">
+      <figcaption>A verified answer to a kinematics question. The Show Work panel lists the given values, the equation used, and each step.</figcaption>
+    </figure>
+  </template>
+
+  <template id="creatorpredict">
+    <h2 id="detail-title">CreatorPredict</h2>
+    <p class="detail-meta"><span>Web developer and head of business development</span><time>December 2025 to January 2026</time></p>
+    <p>
+      A site where fans predicted which creators would grow their audiences
+      and earned points when they called it right. Each season, players picked
+      a lineup of five creators, and every pick was scored against that
+      creator’s usual follower growth.
+    </p>
+    <p>
+      I built the site from scratch with Claude as a coding partner and wrote
+      the prediction and scoring features. On the business side, I put
+      together the partnership materials we sent to creators who wanted to join.
+    </p>
+    <figure>
+      <img src="images/creatorpredict-home.jpg" width="1280" height="720" alt="CreatorPredict landing page reading Spot The Rise" loading="lazy">
+      <figcaption>The landing page.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/creatorpredict-lineup.jpg" width="1280" height="1280" alt="Grid of creators with five selected for a lineup" loading="lazy">
+      <figcaption>Building a lineup. You choose five creators and see a projected score before locking it in.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/creatorpredict-dashboard.jpg" width="1280" height="1292" alt="Season dashboard showing score, rank, accuracy, and the status of each pick" loading="lazy">
+      <figcaption>The season dashboard, with your score, rank, accuracy, and how each pick is doing.</figcaption>
+    </figure>
+  </template>
+
+  <template id="coinfluence">
+    <h2 id="detail-title">CoinFluence</h2>
+    <p class="detail-meta"><span>Co-founder</span><time>August 2025 to January 2026</time></p>
+    <p>
+      A platform idea that would let creators launch their own cryptocurrency
+      tokens for fans to buy, hold, and trade. I helped shape the concept,
+      found creators who might be a good fit, and wrote outreach explaining
+      how it could work with each one’s content and audience.
+    </p>
+    <p>
+      The screenshots are from our demo, which ran on a test network with
+      mock currency, so no real money was involved.
+    </p>
+    <figure>
+      <img src="images/coinfluence-homepage.jpg" width="1280" height="720" alt="CoinFluence landing page reading Don't Just Follow. Trade." loading="lazy">
+      <figcaption>The landing page for the test network demo.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/coinfluence-trading-deck.jpg" width="1280" height="1675" alt="Demo creator token page with price chart, order book, and token stats" loading="lazy">
+      <figcaption>A demo creator token’s page, with its price chart, order book, and stats.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/coinfluence-chart-orderbook.jpg" width="1280" height="720" alt="Close-up of the token price chart next to the order book" loading="lazy">
+      <figcaption>A closer look at the price chart and order book.</figcaption>
+    </figure>
+  </template>
+
+  <template id="windtexter">
+    <h2 id="detail-title">WindTexter</h2>
+    <p class="detail-meta"><span>Research intern, George Mason University</span><time>Summer 2025</time></p>
+    <p>
+      A research app that hides a private message inside ordinary-looking
+      text, so what actually gets sent reads like a normal message.
+    </p>
+    <p>
+      I worked on parts of the SwiftUI iOS app and its Python Flask backend,
+      and connected the app to SMS and email delivery. I also built the chat
+      view, where you can switch between the real message and the cover text
+      that was actually sent.
+    </p>
+    <p class="detail-stack">SwiftUI, Python, Flask</p>
+  </template>
+
+  <template id="refined-harmony">
+    <h2 id="detail-title">Refined Harmony</h2>
+    <p class="detail-meta"><span>iOS app</span><time>April 2024</time></p>
+    <p>
+      An iPhone app for people who want to hear their audio in a loud place
+      but can’t afford noise-canceling headphones.
+    </p>
+    <p>
+      It uses AVAudioEngine to listen to the background noise and turns
+      playback up or down as the room gets louder or quieter. The goal was to
+      make the headphones people already own easier to follow.
+    </p>
+    <p class="detail-stack">SwiftUI, AVAudioEngine</p>
+  </template>
+
+  <script src="main.js"></script>
+</body>
+</html>
