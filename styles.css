@@ -367,3 +367,13 @@ footer p {
   .detail[open],
   .contact:popover-open { animation: none; }
 }
+
+/* Topographic dot field behind everything (drawn by field.js) */
+.field {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
