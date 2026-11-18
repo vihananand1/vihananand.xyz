@@ -29,7 +29,7 @@
       return Array.from({ length: n }, (_, i) => ({ x, y: top + i * rowGap }));
     });
 
-    ctx.strokeStyle = "rgba(255,255,255,0.05)";
+    ctx.strokeStyle = "rgba(255,255,255,0.1)";
     ctx.lineWidth = 1;
     ctx.beginPath();
     for (let l = 0; l < layers.length - 1; l++) {
