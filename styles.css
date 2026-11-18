@@ -263,13 +263,16 @@ footer {
 }
 .text-button:hover { color: var(--white); text-decoration-color: currentColor; }
 
-.lede .ch { transition: color 500ms ease; }
-.lede.revealing .ch { color: #3a3a3a; }
+.lede .ch {
+  border-radius: 2px;
+  transition: color 450ms ease, background-color 450ms ease, box-shadow 450ms ease;
+}
+.lede.revealing .ch { color: #333; }
+/* Message letters become white blocks with black text, like a highlighter */
 .lede.revealing .ch.hit {
-  color: var(--white);
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 0.18em;
+  color: var(--black);
+  background-color: var(--white);
+  box-shadow: 0 0 0 1px var(--white);
 }
 
 .decoded {
@@ -277,8 +280,10 @@ footer {
   margin-top: 1rem;
   font-size: 0.9375rem;
   color: var(--muted);
+  opacity: 0;
+  transition: opacity 400ms ease;
 }
-.decoded strong { color: var(--white); font-weight: 500; }
+.decoded.shown { opacity: 1; }
 .decoded .text-button { margin-left: 0.25rem; }
 
 .visually-hidden {
@@ -472,7 +477,8 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   .detail[open],
   .contact:popover-open { animation: none; }
-  .lede .ch { transition: none; }
+  .lede .ch,
+  .decoded { transition: none; }
 }
 
 /* Neural network background behind everything (drawn by field.js) */

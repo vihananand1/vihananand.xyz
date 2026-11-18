@@ -3,6 +3,8 @@
 
 (() => {
   const MESSAGE = "hi, hire me";
+  const STEP_MS = 110;   // gap between letters lighting up
+  const FADE_MS = 450;   // matches the CSS transition
 
   const lede = document.getElementById("lede");
   const decoded = document.getElementById("decoded");
@@ -31,7 +33,14 @@
     return;
   }
 
+  let state = "hidden";   // hidden, showing, shown, hiding
+  let timer = 0;
+  let hitSpans = [];
+
   function reveal() {
+    clearTimeout(timer);
+    state = "showing";
+
     // Screen readers get the plain paragraph; the split letters are visual only
     const plain = document.createElement("span");
     plain.className = "visually-hidden";
@@ -39,33 +48,49 @@
     const letters = document.createElement("span");
     letters.setAttribute("aria-hidden", "true");
     const hits = new Set(picks);
+    hitSpans = [];
     [...original].forEach((ch, i) => {
       const span = document.createElement("span");
       span.className = hits.has(i) ? "ch hit" : "ch";
       span.textContent = ch;
-      if (hits.has(i)) span.style.transitionDelay = `${picks.indexOf(i) * 110}ms`;
+      if (hits.has(i)) hitSpans.push(span);
       letters.append(span);
     });
+    hitSpans.forEach((span, k) => (span.style.transitionDelay = `${k * STEP_MS}ms`));
     lede.replaceChildren(plain, letters);
+    decoded.hidden = false;
+    showButton.textContent = "Hide the message";
 
     lede.scrollIntoView({ behavior: still.matches ? "auto" : "smooth", block: "center" });
-    // Let the scroll start before the letters change
-    setTimeout(() => {
+    // Let the scroll get going before the letters change
+    timer = setTimeout(() => {
       lede.classList.add("revealing");
-      decoded.hidden = false;
-      showButton.textContent = "Hide the message";
+      decoded.classList.add("shown");
+      state = "shown";
     }, still.matches ? 0 : 450);
   }
 
   function hide() {
+    clearTimeout(timer);
+    state = "hiding";
+    // Letters let go in reverse order, then the plain text comes back
+    const last = hitSpans.length - 1;
+    hitSpans.forEach((span, k) => (span.style.transitionDelay = `${(last - k) * (STEP_MS / 2)}ms`));
     lede.classList.remove("revealing");
-    lede.textContent = original;
-    decoded.hidden = true;
+    decoded.classList.remove("shown");
     showButton.textContent = "This page has a hidden message";
+
+    const total = still.matches ? 0 : FADE_MS + last * (STEP_MS / 2) + 50;
+    timer = setTimeout(() => {
+      lede.textContent = original;
+      decoded.hidden = true;
+      hitSpans = [];
+      state = "hidden";
+    }, total);
   }
 
   showButton.addEventListener("click", () => {
-    if (lede.classList.contains("revealing")) hide();
+    if (state === "shown" || state === "showing") hide();
     else reveal();
   });
   hideButton.addEventListener("click", hide);
