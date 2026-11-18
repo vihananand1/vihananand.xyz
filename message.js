@@ -140,6 +140,7 @@
 
     const box = intro.getBoundingClientRect();
     svg.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
+    svg.style.height = `${box.height}px`;
     svg.replaceChildren();
     // rank[k]: how many message letters sit left of letter k
     const lefts = hitSpans.map((span) => span.getBoundingClientRect().left);
@@ -183,12 +184,41 @@
     });
   }
 
+  // Run a change that alters the intro's height, and ease the height from
+  // its old value to the new one so everything below glides instead of jumping
+  const RESIZE_MS = 450;
+  let heightTimer = 0;
+  function smoothHeight(change) {
+    clearTimeout(heightTimer);
+    const start = intro.getBoundingClientRect().height;
+    intro.style.transition = "none";
+    intro.style.height = "";
+    change();
+    const end = intro.getBoundingClientRect().height;
+    if (still.matches || Math.abs(start - end) < 1) {
+      intro.style.overflow = "";
+      return;
+    }
+    intro.style.overflow = "clip";
+    intro.style.height = `${start}px`;
+    intro.getBoundingClientRect();
+    intro.style.transition = `height ${RESIZE_MS}ms ease`;
+    intro.style.height = `${end}px`;
+    heightTimer = setTimeout(() => {
+      intro.style.transition = "";
+      intro.style.height = "";
+      intro.style.overflow = "";
+    }, RESIZE_MS + 30);
+  }
+
   function reveal() {
     clearTimers();
     state = "shown";
-    build();
-    note.hidden = false;
-    layout();
+    smoothHeight(() => {
+      build();
+      note.hidden = false;
+      layout();
+    });
     // Start with the lines retracted, then draw them
     paths.forEach((p) => {
       p.style.transition = "none";
@@ -225,11 +255,13 @@
     showButton.textContent = "This page has a hidden message";
 
     later(() => {
-      lede.textContent = original;
-      word.hidden = true;
-      svg.hidden = true;
-      note.hidden = true;
-      svg.replaceChildren();
+      smoothHeight(() => {
+        lede.textContent = original;
+        word.hidden = true;
+        svg.hidden = true;
+        note.hidden = true;
+        svg.replaceChildren();
+      });
       state = "hidden";
     }, LINE_MS + last * (STEP_MS / 2) + FADE_MS);
   }
