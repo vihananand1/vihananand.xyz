@@ -91,11 +91,16 @@ time { font-variant-numeric: tabular-nums; }
 
 /* Contact: a button pinned to the top right that opens a small panel */
 
-.contact-toggle {
+/* Desktop: the button floats in the corner. Phones: it sits in a top bar. */
+.topbar {
   position: fixed;
   top: 1.25rem;
   right: var(--gutter);
   z-index: 10;
+}
+.topbar-name { display: none; }
+
+.contact-toggle {
   font: inherit;
   font-size: 0.9375rem;
   font-weight: 500;
@@ -339,25 +344,79 @@ footer p {
 /* Narrow screens: the year becomes a pinned bar, the dialog fills the screen */
 
 @media (max-width: 46rem) {
-  /* On phones the button sits at the top of the page and scrolls away,
-     so it never covers the text */
-  .contact-toggle { position: absolute; }
+  :root { --gutter: 1.375rem; }
 
-  .year { grid-template-columns: minmax(0, 1fr); }
-
-  .year-label {
+  /* A solid bar across the top holds the button, so it never sits on text */
+  .topbar {
+    position: sticky;
     top: 0;
-    z-index: 1;
-    padding: 0.75rem 0;
+    right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 3.5rem;
+    padding-inline: var(--gutter);
     background: var(--black);
-    font-size: 2rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .topbar-name {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .contact-toggle { padding: 0.35rem 0.875rem; }
+  .contact { top: 4rem; }
+
+  .intro { padding-block: 3rem 2.75rem; }
+  .intro h1 { font-size: 2.75rem; margin-bottom: 1.25rem; }
+  .lede { font-size: 1.0625rem; line-height: 1.6; }
+
+  /* Timeline: a narrow year column, then a vertical line with a dot per entry */
+  .year {
+    grid-template-columns: 3rem minmax(0, 1fr);
+    column-gap: 0;
+    border-top: 0;
+    padding-bottom: 0;
   }
 
-  .entry { padding-block: 1.25rem; }
-  .entries li:first-child .entry { padding-top: 0.5rem; }
+  .year-label {
+    top: 4.75rem;
+    padding-top: 2.05rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
 
-  .entry-meta { display: block; }
-  .entry-meta time { display: block; }
+  .entries {
+    border-left: 1px solid var(--rule);
+    padding-left: 1.25rem;
+  }
+  .entries li { position: relative; }
+  .entries li::before {
+    content: "";
+    position: absolute;
+    left: calc(-1.25rem - 4px);
+    top: 2.2rem;
+    width: 7px;
+    height: 7px;
+    border: 1px solid var(--muted);
+    border-radius: 50%;
+    background: var(--black);
+  }
+  .year:last-child .entries { padding-bottom: 1rem; }
+
+  .entry { padding-block: 1.75rem; }
+  .entry-title { font-size: 1.25rem; }
+  .entry-blurb { margin-top: 0.5rem; }
+  .entry-meta {
+    display: block;
+    margin-top: 0.875rem;
+    font-size: 0.875rem;
+  }
+  .entry-meta time { display: block; margin-top: 0.125rem; }
+
+  footer { padding-block: 1.5rem 3.5rem; }
 
   .detail {
     width: 100%;
