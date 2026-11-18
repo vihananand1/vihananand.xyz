@@ -89,12 +89,49 @@ time { font-variant-numeric: tabular-nums; }
   color: var(--soft);
 }
 
+/* Contact: four labeled cells in a row, two by two on phones */
 .contact {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1.75rem;
-  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(4, max-content);
+  gap: 1.25rem 3rem;
+  margin: 2.25rem 0 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+  max-width: max-content;
 }
+
+.contact dt {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.contact dd {
+  margin: 0.125rem 0 0;
+  font-weight: 500;
+}
+
+.contact a {
+  text-decoration: none;
+  border-bottom: 1px solid var(--edge);
+}
+.contact a:hover { border-bottom-color: var(--white); }
+
+@media (max-width: 52rem) {
+  .contact {
+    grid-template-columns: repeat(2, minmax(0, max-content));
+    max-width: none;
+  }
+}
+
+@media (max-width: 26rem) {
+  .contact { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Scrolling still works; the scrollbar itself is hidden */
+html,
+.detail { scrollbar-width: none; }
+html::-webkit-scrollbar,
+.detail::-webkit-scrollbar { display: none; }
 
 /* Timeline: one section per year, the year stays pinned while its entries scroll */
 
