@@ -228,7 +228,9 @@
     paths.forEach((p) => (p.style.transition = ""));
     showButton.textContent = "Hide the message";
 
-    lede.scrollIntoView({ behavior: still.matches ? "auto" : "smooth", block: "center" });
+    // The intro is at the very top, so scroll all the way up. (Centering the
+    // paragraph fell short on phones, where the intro grows as it opens.)
+    window.scrollTo({ top: 0, behavior: still.matches ? "auto" : "smooth" });
     later(() => {
       lede.classList.add("revealing");
       note.classList.add("shown");
