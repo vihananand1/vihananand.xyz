@@ -211,9 +211,30 @@
     }, RESIZE_MS + 30);
   }
 
-  function reveal() {
+  // Scroll to the top and resolve once we're there. The message waits for
+  // this: if the intro grew while the page was still scrolling, the browser
+  // would shift the scroll position to keep the content in view steady,
+  // and the page would stop short of the top.
+  function scrollToTop() {
+    return new Promise((done) => {
+      if (window.scrollY < 2) return done();
+      window.scrollTo({ top: 0, behavior: still.matches ? "auto" : "smooth" });
+      const started = performance.now();
+      const check = () => {
+        if (window.scrollY < 2 || performance.now() - started > 1500) done();
+        else requestAnimationFrame(check);
+      };
+      requestAnimationFrame(check);
+    });
+  }
+
+  async function reveal() {
     clearTimers();
     state = "shown";
+    showButton.textContent = "Hide the message";
+    await scrollToTop();
+    if (state !== "shown") return;  // hidden again while scrolling
+
     smoothHeight(() => {
       build();
       note.hidden = false;
@@ -226,11 +247,7 @@
     });
     svg.getBoundingClientRect();
     paths.forEach((p) => (p.style.transition = ""));
-    showButton.textContent = "Hide the message";
 
-    // The intro is at the very top, so scroll all the way up. (Centering the
-    // paragraph fell short on phones, where the intro grows as it opens.)
-    window.scrollTo({ top: 0, behavior: still.matches ? "auto" : "smooth" });
     later(() => {
       lede.classList.add("revealing");
       note.classList.add("shown");
@@ -239,7 +256,7 @@
         span.style.transitionDelay = `${k * STEP_MS + LINE_MS - 150}ms`;
         span.classList.add("in");
       });
-    }, 450);
+    }, 150);
   }
 
   function hide() {
