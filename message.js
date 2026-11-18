@@ -21,39 +21,69 @@
   const still = matchMedia("(prefers-reduced-motion: reduce)");
   const SVG_NS = "http://www.w3.org/2000/svg";
 
-  // Choose where each message letter comes from. Letters must stay in
-  // order; among the valid choices, pick ones spread across the paragraph.
-  function letterPositions() {
-    const text = original.toLowerCase();
-    const letters = [...MESSAGE.replace(/[^a-z]/g, "")];
-    const fits = (from, k) => {
-      for (; k < letters.length; k++) {
-        from = text.indexOf(letters[k], from);
-        if (from < 0) return false;
-        from++;
-      }
-      return true;
-    };
-    if (!fits(0, 0)) return null;
-    const picks = [];
-    let from = 0;
-    letters.forEach((ch, k) => {
-      const ideal = ((k + 0.5) / letters.length) * text.length;
-      let best = -1;
-      for (let j = text.indexOf(ch, from); j >= 0; j = text.indexOf(ch, j + 1)) {
-        if (!fits(j + 1, k + 1)) break;
-        if (best < 0 || Math.abs(j - ideal) < Math.abs(best - ideal)) best = j;
-      }
-      picks.push(best);
-      from = best + 1;
-    });
-    return picks;
+  const text = original.toLowerCase();
+  const letters = [...MESSAGE.replace(/[^a-z]/g, "")];
+
+  // Can letters k.. still be found, in order, starting at index `from`?
+  function fits(from, k) {
+    for (; k < letters.length; k++) {
+      from = text.indexOf(letters[k], from);
+      if (from < 0) return false;
+      from++;
+    }
+    return true;
   }
 
-  const picks = letterPositions();
-  if (!picks) {
+  if (!fits(0, 0)) {
     showButton.hidden = true;
     return;
+  }
+
+  // Choose which paragraph letters carry the message, based on where they
+  // sit on screen. Every valid set (letters in reading order) is scored:
+  // first by how many lines would cross, then by how far apart the letters
+  // are, so each line gets its own clear column.
+  //   side: lines run right to the word, so letters later in the message
+  //         should sit further left (the wiring then nests without crossing)
+  //   below: lines drop to the word, so later letters should sit further right
+  function pickLetters(spans, side) {
+    const xs = spans.map((span) => {
+      const r = span.getBoundingClientRect();
+      return r.left + r.width / 2;
+    });
+    const n = letters.length;
+    const picks = new Array(n);
+    let best = null, bestScore = -Infinity, visited = 0;
+
+    function score() {
+      let crossings = 0, gap = Infinity;
+      for (let k = 0; k < n; k++) {
+        for (let j = k + 1; j < n; j++) {
+          const dx = xs[picks[j]] - xs[picks[k]];
+          if (side ? dx > 0 : dx < 0) crossings++;
+          gap = Math.min(gap, Math.abs(dx));
+        }
+      }
+      // Letters closer than 44px read as one clump, which looks worse than a crossing
+      return -crossings * 30 + Math.min(gap, 90) - (gap < 44 ? 400 : 0);
+    }
+
+    function search(k, from) {
+      if (++visited > 300000) return;
+      if (k === n) {
+        const value = score();
+        if (value > bestScore) { bestScore = value; best = picks.slice(); }
+        return;
+      }
+      for (let j = text.indexOf(letters[k], from); j >= 0; j = text.indexOf(letters[k], j + 1)) {
+        if (!fits(j + 1, k + 1)) break;
+        picks[k] = j;
+        search(k + 1, j + 1);
+      }
+    }
+
+    search(0, 0);
+    return best;
   }
 
   let state = "hidden";  // hidden, shown, hiding
@@ -65,23 +95,23 @@
   const later = (fn, ms) => timers.push(setTimeout(fn, still.matches ? 0 : ms));
   const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
 
+  let charSpans = [];
+
   function build() {
     // Screen readers get the plain paragraph; the split letters are visual only
     const plain = document.createElement("span");
     plain.className = "visually-hidden";
     plain.textContent = original;
-    const letters = document.createElement("span");
-    letters.setAttribute("aria-hidden", "true");
-    const hits = new Set(picks);
-    hitSpans = [];
-    [...original].forEach((ch, i) => {
+    const holder = document.createElement("span");
+    holder.setAttribute("aria-hidden", "true");
+    charSpans = [...original].map((ch) => {
       const span = document.createElement("span");
-      span.className = hits.has(i) ? "ch hit" : "ch";
+      span.className = "ch";
       span.textContent = ch;
-      if (hits.has(i)) hitSpans.push(span);
-      letters.append(span);
+      return span;
     });
-    lede.replaceChildren(plain, letters);
+    holder.append(...charSpans);
+    lede.replaceChildren(plain, holder);
 
     wordSpans = [];
     word.replaceChildren(...[...MESSAGE].map((ch) => {
@@ -103,28 +133,38 @@
     // On wide screens the word sits level with the paragraph's last line
     word.style.top = side ? `${lede.offsetTop + lede.offsetHeight - word.offsetHeight}px` : "";
 
+    // Pick the message letters for the current layout
+    hitSpans.forEach((span) => span.classList.remove("hit"));
+    hitSpans = pickLetters(charSpans, side).map((i) => charSpans[i]);
+    hitSpans.forEach((span) => span.classList.add("hit"));
+
     const box = intro.getBoundingClientRect();
     svg.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
     svg.replaceChildren();
+    // rank[k]: how many message letters sit left of letter k
+    const lefts = hitSpans.map((span) => span.getBoundingClientRect().left);
+    const rank = lefts.map((x) => lefts.filter((y) => y < x).length);
     paths = hitSpans.map((from, k) => {
       const a = from.getBoundingClientRect();
       const b = wordSpans[k].getBoundingClientRect();
       let d;
       if (side) {
         // Wiring: down from the letter, right along its own track under the
-        // paragraph, then up into the decoded letter. The first letter takes
-        // the lowest track so the drops never cross another line's track.
-        const r = 6;
+        // paragraph, then up into the decoded letter. The letter furthest
+        // left takes the lowest track, so no drop crosses another track.
+        const r = 8;
         const sx = a.left + a.width / 2 - box.left, sy = a.bottom + 2 - box.top;
         const tx = b.left + b.width / 2 - box.left, ty = b.bottom + 8 - box.top;
-        const lane = lede.offsetTop + lede.offsetHeight + 16 + (hitSpans.length - 1 - k) * 7;
+        const lane = lede.offsetTop + lede.offsetHeight + 18 + (hitSpans.length - 1 - rank[k]) * 12;
         d = `M${sx},${sy} L${sx},${lane - r} Q${sx},${lane} ${sx + r},${lane} ` +
             `L${tx - r},${lane} Q${tx},${lane} ${tx},${lane - r} L${tx},${ty}`;
       } else {
+        // Straight down out of the paragraph, then a curve into the word
         const sx = a.left + a.width / 2 - box.left, sy = a.bottom + 2 - box.top;
         const tx = b.left + b.width / 2 - box.left, ty = b.top - 6 - box.top;
-        const bend = (ty - sy) / 2;
-        d = `M${sx},${sy} C${sx},${sy + bend} ${tx},${ty - bend} ${tx},${ty}`;
+        const exit = lede.offsetTop + lede.offsetHeight + 4;
+        const bend = (ty - exit) / 2;
+        d = `M${sx},${sy} L${sx},${exit} C${sx},${exit + bend} ${tx},${ty - bend} ${tx},${ty}`;
       }
       const path = document.createElementNS(SVG_NS, "path");
       path.setAttribute("d", d);

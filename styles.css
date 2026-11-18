@@ -303,7 +303,7 @@ footer {
 }
 .decode-lines path {
   fill: none;
-  stroke: rgb(255 255 255 / 0.4);
+  stroke: rgb(255 255 255 / 0.35);
   stroke-width: 1;
   transition: stroke-dashoffset 700ms ease-in-out;
 }
@@ -319,7 +319,7 @@ footer {
 .decoded.shown { opacity: 1; }
 .decoded .text-button { display: block; margin-top: 0.25rem; }
 /* Leave room under the paragraph for the wiring tracks */
-.decoding-side .decoded { margin-top: 4.25rem; }
+.decoding-side .decoded { margin-top: 6.25rem; }
 
 .visually-hidden {
   position: absolute;
