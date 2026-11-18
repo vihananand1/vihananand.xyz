@@ -59,3 +59,11 @@ if (templateFor(initial)) {
   opener = document.querySelector(`[data-project="${initial}"]`);
   show(initial);
 }
+
+// Phones: show the name in the top bar only after the big name scrolls away
+const topbar = document.querySelector(".topbar");
+const bigName = document.querySelector(".intro h1");
+new IntersectionObserver(
+  ([entry]) => topbar.classList.toggle("past-name", !entry.isIntersecting),
+  { rootMargin: "-56px 0px 0px 0px" }
+).observe(bigName);

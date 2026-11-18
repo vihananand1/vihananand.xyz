@@ -440,14 +440,21 @@ footer {
     height: 3.5rem;
     padding-inline: var(--gutter);
     background: var(--black);
-    border-bottom: 1px solid var(--rule);
+    border-bottom: 1px solid transparent;
+    transition: border-color 200ms ease;
   }
+  /* The name and the bar's bottom rule only appear once the big name has
+     scrolled out of view, so the bar never repeats what's on screen */
   .topbar-name {
     display: block;
     font-size: 0.9375rem;
     font-weight: 700;
     letter-spacing: -0.01em;
+    opacity: 0;
+    transition: opacity 200ms ease;
   }
+  .topbar.past-name { border-bottom-color: var(--rule); }
+  .topbar.past-name .topbar-name { opacity: 1; }
   .contact-toggle { padding: 0.35rem 0.875rem; }
   .contact { top: 4rem; }
 
@@ -513,6 +520,8 @@ footer {
   .detail[open],
   .contact:popover-open { animation: none; }
   .lede .ch,
+  .topbar,
+  .topbar-name,
   .decoded,
   .decoded-word span,
   .decode-lines path { transition: none; }
