@@ -22,10 +22,11 @@
 
   <header class="intro wrap">
     <h1>Vihan Anand</h1>
-    <p class="lede">
-      I’m a junior at Freedom High School in South Riding, Virginia. I build
-      apps and websites, and I’ve spent the last two summers doing research
-      at George Mason University. Below is everything I’ve worked on, newest first.
+    <p class="lede" id="lede">I’m a junior at Freedom High School in South Riding, Virginia. I build apps and websites, and I’ve done research on AI systems and natural language processing. Below is everything I’ve worked on, newest first.</p>
+    <p class="decoded" id="decoded" hidden>
+      Decoded: <strong>hi, hire me.</strong> WindTexter hides a real message
+      inside ordinary text, and so does this paragraph.
+      <button type="button" class="text-button" id="hide-message">Show the original</button>
     </p>
   </header>
 
@@ -116,6 +117,7 @@
 
   <footer class="wrap">
     <p>Updated November 2026</p>
+    <button type="button" class="text-button" id="show-message">This page has a hidden message</button>
   </footer>
 
   <dialog class="detail" aria-labelledby="detail-title">
@@ -262,5 +264,6 @@
   <canvas class="field" aria-hidden="true"></canvas>
   <script src="main.js"></script>
   <script src="field.js"></script>
+  <script src="message.js"></script>
 </body>
 </html>
