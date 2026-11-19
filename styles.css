@@ -440,16 +440,13 @@ footer {
 
 .detail-body figure { margin-top: 2.5rem; }
 
-/* Phone screenshots sit side by side: four across on wide screens, two on phones */
-.phones {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
-  gap: 2rem 1.25rem;
-  margin-top: 2.5rem;
+/* Phone screenshots stack like the other screenshots, one per row with the
+   caption underneath, but at phone size instead of the full window width */
+.detail-body .phones figure { margin-top: 2.5rem; }
+.detail-body .phones img {
+  width: min(100%, 16rem);
+  border-radius: 0.75rem;
 }
-.detail-body .phones figcaption { font-size: 0.875rem; }
-.detail-body .phones figure { margin: 0; }
-.detail-body .phones img { border-radius: 0.75rem; }
 
 .detail-body img {
   display: block;
