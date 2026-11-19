@@ -442,11 +442,13 @@ footer {
 
 /* Phone screenshots stack like the other screenshots, one per row with the
    caption underneath, but at phone size instead of the full window width */
-.detail-body .phones figure { margin-top: 2.5rem; }
+.detail-body .phones figure { margin-top: 2.5rem; text-align: center; }
 .detail-body .phones img {
   width: min(100%, 16rem);
+  margin-inline: auto;
   border-radius: 0.75rem;
 }
+.detail-body .phones figcaption { margin-inline: auto; max-width: 26rem; }
 
 .detail-body img {
   display: block;
