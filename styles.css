@@ -125,10 +125,20 @@ time { font-variant-numeric: tabular-nums; }
   border: 1px solid var(--edge);
 }
 
-.contact:popover-open { animation: drop 140ms ease-out; }
-
-@keyframes drop {
-  from { opacity: 0; transform: translateY(-0.375rem); }
+/* The menu fades and slides in when it opens, and back out when it closes
+   (including when you click elsewhere on the page) */
+.contact {
+  opacity: 0;
+  transform: translateY(-0.375rem);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease,
+    overlay 160ms allow-discrete,
+    display 160ms allow-discrete;
+}
+.contact:popover-open { opacity: 1; transform: none; }
+@starting-style {
+  .contact:popover-open { opacity: 0; transform: translateY(-0.375rem); }
 }
 
 .contact dl { margin: 0; }
@@ -356,10 +366,20 @@ footer {
 
 .detail::backdrop { background: rgb(0 0 0 / 0.82); }
 
-.detail[open] { animation: rise 180ms ease-out; }
+/* Opening rises in; closing (main.js adds .closing) sinks out, then closes */
+.detail[open] { animation: rise 200ms ease-out; }
+.detail[open]::backdrop { animation: fade 200ms ease-out; }
+.detail.closing { animation: sink 180ms ease-in forwards; }
+.detail.closing::backdrop { animation: fade 180ms ease-in reverse forwards; }
 
 @keyframes rise {
   from { opacity: 0; transform: translateY(0.5rem); }
+}
+@keyframes sink {
+  to { opacity: 0; transform: translateY(0.5rem); }
+}
+@keyframes fade {
+  from { opacity: 0; }
 }
 
 .detail-bar {
@@ -370,7 +390,6 @@ footer {
   justify-content: flex-end;
   padding: 0.875rem 1rem;
   background: var(--black);
-  border-bottom: 1px solid var(--rule);
 }
 
 .close {
@@ -407,6 +426,8 @@ footer {
   color: var(--muted);
 }
 .detail-meta span { color: var(--white); font-weight: 500; }
+.detail-meta a { text-decoration-color: var(--edge); }
+.detail-meta a:hover { text-decoration-color: currentColor; }
 
 .detail-body p + p { margin-top: 0.875rem; }
 .detail-body cite { font-style: italic; }
@@ -418,6 +439,17 @@ footer {
 }
 
 .detail-body figure { margin-top: 2.5rem; }
+
+/* Phone screenshots sit side by side: four across on wide screens, two on phones */
+.phones {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 2rem 1.25rem;
+  margin-top: 2.5rem;
+}
+.detail-body .phones figcaption { font-size: 0.875rem; }
+.detail-body .phones figure { margin: 0; }
+.detail-body .phones img { border-radius: 0.75rem; }
 
 .detail-body img {
   display: block;
@@ -527,7 +559,10 @@ footer {
 
 @media (prefers-reduced-motion: reduce) {
   .detail[open],
-  .contact:popover-open { animation: none; }
+  .detail[open]::backdrop,
+  .detail.closing,
+  .detail.closing::backdrop { animation: none; }
+  .contact { transition: none; }
   .lede .ch,
   .topbar,
   .topbar-name,

@@ -16,6 +16,8 @@ function show(id) {
   const template = templateFor(id);
   if (!template) return false;
   body.replaceChildren(template.content.cloneNode(true));
+  clearTimeout(closeTimer);
+  dialog.classList.remove("closing");
   if (!dialog.open) dialog.showModal();
   dialog.scrollTop = 0;
   closeButton.focus();
@@ -31,11 +33,29 @@ document.querySelectorAll("[data-project]").forEach((link) => {
   });
 });
 
-closeButton.addEventListener("click", () => dialog.close());
+// Closing plays a short exit animation first, then really closes
+const still = matchMedia("(prefers-reduced-motion: reduce)");
+let closeTimer = 0;
+function closeDialog() {
+  if (!dialog.open || dialog.classList.contains("closing")) return;
+  dialog.classList.add("closing");
+  closeTimer = setTimeout(() => {
+    dialog.classList.remove("closing");
+    dialog.close();
+  }, still.matches ? 0 : 180);
+}
+
+closeButton.addEventListener("click", closeDialog);
+
+// Esc would close it instantly; animate instead
+dialog.addEventListener("cancel", (event) => {
+  event.preventDefault();
+  closeDialog();
+});
 
 // A click on the dimmed area outside the panel closes it.
 dialog.addEventListener("click", (event) => {
-  if (event.target === dialog) dialog.close();
+  if (event.target === dialog) closeDialog();
 });
 
 dialog.addEventListener("close", () => {
@@ -50,7 +70,7 @@ dialog.addEventListener("close", () => {
 window.addEventListener("popstate", () => {
   const id = location.hash.slice(1);
   if (templateFor(id)) show(id);
-  else if (dialog.open) dialog.close();
+  else closeDialog();
 });
 
 // Opening the site with a project in the URL goes straight to that project.
