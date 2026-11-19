@@ -190,6 +190,7 @@
   function smoothHeight(change) {
     clearTimeout(heightTimer);
     const start = intro.getBoundingClientRect().height;
+    const toggleBefore = showButton.getBoundingClientRect().top;
     intro.style.transition = "none";
     intro.style.height = "";
     change();
@@ -197,6 +198,15 @@
     if (still.matches || Math.abs(start - end) < 1) {
       intro.style.overflow = "";
       return;
+    }
+    // The toggle link moves when the note and word come and go; slide it
+    // from where it was to where it now belongs instead of letting it jump
+    const shift = toggleBefore - showButton.getBoundingClientRect().top;
+    if (Math.abs(shift) > 0.5) {
+      showButton.animate(
+        [{ transform: `translateY(${shift}px)` }, { transform: "none" }],
+        { duration: RESIZE_MS, easing: "ease" }
+      );
     }
     intro.style.overflow = "clip";
     intro.style.height = `${start}px`;
