@@ -16,7 +16,6 @@
   const note = document.getElementById("decoded");
   const svg = document.getElementById("decode-lines");
   const showButton = document.getElementById("show-message");
-  const hideButton = document.getElementById("hide-message");
   const original = lede.textContent;
   const still = matchMedia("(prefers-reduced-motion: reduce)");
   const SVG_NS = "http://www.w3.org/2000/svg";
@@ -236,7 +235,7 @@
   async function reveal() {
     clearTimers();
     state = "shown";
-    showButton.textContent = "Hide the message";
+    showButton.textContent = "Show the original";
     await scrollToTop();
     if (state !== "shown") return;  // hidden again while scrolling
 
@@ -283,7 +282,7 @@
     setLines(false, (k) => (last - k) / 2);
     note.classList.remove("shown");
     later(() => lede.classList.remove("revealing"), LINE_MS / 2);
-    showButton.textContent = "This page has a hidden message";
+    showButton.textContent = "This paragraph has a hidden message";
 
     later(() => {
       smoothHeight(() => {
@@ -298,7 +297,6 @@
   }
 
   showButton.addEventListener("click", () => (state === "shown" ? hide() : reveal()));
-  hideButton.addEventListener("click", hide);
 
   let resizeTimer;
   window.addEventListener("resize", () => {
