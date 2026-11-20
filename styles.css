@@ -327,6 +327,8 @@ footer {
   transition: opacity 400ms ease;
 }
 .decoded.shown { opacity: 1; }
+.decoded a { color: var(--soft); text-decoration-color: var(--edge); }
+.decoded a:hover { color: var(--white); text-decoration-color: currentColor; }
 /* The toggle sits right under the paragraph, with a visible underline so
    it reads as clickable without competing with the intro */
 .reveal-toggle {

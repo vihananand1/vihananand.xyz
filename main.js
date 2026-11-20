@@ -24,12 +24,44 @@ function show(id) {
   return true;
 }
 
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+
+// Resolve once the page has stopped scrolling (or after a short limit)
+function scrollSettled() {
+  return new Promise((done) => {
+    let last = window.scrollY, steadyFrames = 0;
+    const started = performance.now();
+    const check = () => {
+      steadyFrames = window.scrollY === last ? steadyFrames + 1 : 0;
+      last = window.scrollY;
+      if (steadyFrames >= 4 || performance.now() - started > 1500) done();
+      else requestAnimationFrame(check);
+    };
+    requestAnimationFrame(check);
+  });
+}
+
+function open(id, from) {
+  opener = from;
+  if (show(id)) history.pushState({ project: id }, "", "#" + id);
+}
+
 document.querySelectorAll("[data-project]").forEach((link) => {
-  link.addEventListener("click", (event) => {
+  link.addEventListener("click", async (event) => {
     event.preventDefault();
     const id = link.dataset.project;
-    opener = link;
-    if (show(id)) history.pushState({ project: id }, "", "#" + id);
+    // Links marked data-jump (like "WindTexter" in the hidden-message note)
+    // first scroll down to that project in the list, then open it there
+    if ("jump" in link.dataset) {
+      const entry = document.querySelector(`.entry[data-project="${id}"]`);
+      if (entry) {
+        entry.scrollIntoView({ behavior: reduceMotion.matches ? "auto" : "smooth", block: "center" });
+        await scrollSettled();
+        open(id, entry);
+        return;
+      }
+    }
+    open(id, link);
   });
 });
 
