@@ -592,3 +592,6 @@ footer {
     opacity: 0.4;
   }
 }
+
+/* A bolded date keeps the date's grey but stands out by weight */
+time strong { font-weight: 700; }
